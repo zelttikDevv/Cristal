@@ -10,7 +10,7 @@ const phrases = [
     "Hay personas que son hogar, y tú te sientes así",
     "Bailaría Innerbloom contigo en cualquier galaxia",
     "No eres una opción, eres el destino",
-    "546 💜", "✨"
+    "546", "✨"
 ];
 
 const inputs = document.querySelectorAll('.code-input');
@@ -36,7 +36,7 @@ function startExperience() {
     document.getElementById('loader-container').classList.remove('hidden');
     
     gsap.to("#progress", {
-        width: "100%", duration: 3, ease: "power2.inOut",
+        width: "100%", duration: 2.5, ease: "power2.inOut",
         onComplete: () => {
             document.getElementById('loader-container').classList.add('hidden');
             document.getElementById('universe-container').classList.remove('hidden');
@@ -50,16 +50,14 @@ function startExperience() {
 function buildSpiral() {
     const galaxy = document.getElementById('spiral-galaxy');
     
-    // Crear la espiral
     phrases.forEach((text, i) => {
         const card = document.createElement('div');
         card.className = 'phrase-card';
         card.innerText = text;
         
-        // Matemáticas para la espiral del video
-        const angle = i * 0.9; 
-        const radius = 100 + (i * 25);
-        const z = i * -250; // Profundidad
+        const angle = i * 0.95; 
+        const radius = 120 + (i * 30);
+        const z = i * -300; 
 
         gsap.set(card, {
             left: "50%", top: "50%",
@@ -72,28 +70,29 @@ function buildSpiral() {
         galaxy.appendChild(card);
     });
 
-    // Animación de rotación general
     gsap.to(galaxy, {
         rotationZ: 360,
-        duration: 60,
+        duration: 80,
         repeat: -1,
         ease: "none"
     });
 
-    // Movimiento infinito de "viaje" (Zoom)
+    // VIAJE AUTOMÁTICO - Aumentado un 20%
     let moveZ = 0;
+    const speed = 0.65; // Antes era 0.5, ahora ~20% más rápido
+
     function travel() {
-        moveZ += 0.5; // Velocidad de crucero
+        moveZ += speed;
         gsap.set(galaxy, { z: moveZ });
         requestAnimationFrame(travel);
     }
     travel();
 
-    // Permitir zoom manual en celular
+    // Zoom manual (dedo/mouse)
     let lastY = 0;
     window.addEventListener('touchstart', e => lastY = e.touches[0].clientY);
     window.addEventListener('touchmove', e => {
-        let delta = (lastY - e.touches[0].clientY) * 2;
+        let delta = (lastY - e.touches[0].clientY) * 2.5; // También aumentamos sensibilidad
         moveZ += delta;
         lastY = e.touches[0].clientY;
     });
