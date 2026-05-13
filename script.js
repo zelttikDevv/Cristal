@@ -13,10 +13,10 @@ const phrases = [
     "546 💜", "✨"
 ];
 
-const unlockBtn = document.getElementById('unlock-btn');
 const inputs = document.querySelectorAll('.code-input');
+const unlockBtn = document.getElementById('unlock-btn');
 
-// Auto-tab entre inputs
+// Manejo de inputs
 inputs.forEach((input, i) => {
     input.addEventListener('input', () => {
         if (input.value.length === 1 && i < inputs.length - 1) inputs[i+1].focus();
@@ -26,13 +26,13 @@ inputs.forEach((input, i) => {
 unlockBtn.addEventListener('click', () => {
     const code = Array.from(inputs).map(i => i.value).join('');
     if (code === CORRECT_CODE) {
-        startLoading();
+        startExperience();
     } else {
         gsap.to(".inputs", { x: 10, repeat: 5, yoyo: true, duration: 0.05 });
     }
 });
 
-function startLoading() {
+function startExperience() {
     document.getElementById('lock-screen').classList.add('hidden');
     document.getElementById('loader-container').classList.remove('hidden');
     
@@ -40,59 +40,70 @@ function startLoading() {
         width: "100%", duration: 3, ease: "power2.inOut",
         onComplete: () => {
             document.getElementById('loader-container').classList.add('hidden');
-            document.getElementById('galaxy-wrapper').classList.remove('hidden');
+            document.getElementById('universe').classList.remove('hidden');
             document.getElementById('zoom-hint').classList.remove('hidden');
             document.getElementById('innerbloom-audio').play();
-            createGalaxy();
+            buildUniverse();
         }
     });
 }
 
-function createGalaxy() {
-    const container = document.getElementById('text-universe');
-    const totalPhrases = 40; // Repetimos frases para llenar el espacio
+function buildUniverse() {
+    const starsContainer = document.getElementById('stars-container');
+    const phrasesContainer = document.getElementById('phrases-container');
 
-    for (let i = 0; i < totalPhrases; i++) {
-        const span = document.createElement('span');
-        span.className = 'galaxy-phrase';
-        span.innerText = phrases[i % phrases.length];
-        
-        // Matemáticas para la espiral (como el video)
-        const angle = i * 0.8; 
-        const radius = i * 15; // Se expande hacia afuera
-        const x = Math.cos(angle) * radius;
-        const y = Math.sin(angle) * radius;
-        const z = (Math.random() - 0.5) * 500;
+    // Crear 150 estrellas
+    for (let i = 0; i < 150; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 3;
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        const z = Math.random() * 1000 - 500;
 
-        container.appendChild(span);
-
-        // Animación individual de rotación
-        gsap.set(span, { x: window.innerWidth/2 + x, y: window.innerHeight/2 + y, z: z });
-        
-        gsap.to(span, {
-            rotationZ: 360,
-            duration: 20 + Math.random() * 20,
-            repeat: -1,
-            ease: "none"
+        gsap.set(star, {
+            width: size, height: size,
+            left: x + "%", top: y + "%",
+            z: z
         });
+        starsContainer.appendChild(star);
     }
 
-    // Rotación general del universo
-    gsap.to(container, {
-        rotationY: 360,
-        duration: 40,
+    // Crear frases en espiral/profundidad
+    phrases.forEach((text, i) => {
+        const div = document.createElement('div');
+        div.className = 'phrase';
+        div.innerText = text;
+        
+        const angle = i * 0.7;
+        const radius = 150 + (i * 20);
+        const z = i * -150; // Cada frase más lejos que la anterior
+
+        gsap.set(div, {
+            left: "50%", top: "50%",
+            x: Math.cos(angle) * radius,
+            y: Math.sin(angle) * radius,
+            z: z,
+            xPercent: -50, yPercent: -50
+        });
+        phrasesContainer.appendChild(div);
+    });
+
+    // Animación de rotación constante
+    gsap.to([starsContainer, phrasesContainer], {
+        rotationZ: 360,
+        duration: 100,
         repeat: -1,
         ease: "none"
     });
 
-    // Control de Zoom con el dedo / mouse
-    let zoom = 0;
-    window.addEventListener('touchmove', e => {
-        zoom -= 2; // Efecto de entrar a la galaxia
-        gsap.to(container, { z: zoom, duration: 1 });
-    });
-    window.addEventListener('wheel', e => {
-        zoom -= e.deltaY * 0.5;
-        gsap.to(container, { z: zoom, duration: 1 });
+    // Movimiento con el dedo (Zoom/Viaje)
+    let currentZ = 0;
+    window.addEventListener('touchmove', (e) => {
+        currentZ += 5; // Simula avanzar
+        gsap.to([starsContainer, phrasesContainer], {
+            z: currentZ,
+            duration: 0.5
+        });
     });
 }
