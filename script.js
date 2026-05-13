@@ -1,3 +1,4 @@
+
 const CORRECT_CODE = "546";
 const hints = [
     "Son 3 números",
@@ -13,9 +14,9 @@ const phrases = [
     "Eres ese 'algo' que no sabía que estaba buscando",
     "Si el universo es infinito, qué suerte coincidir aquí",
     "Contigo el silencio no es incómodo, es paz",
-    "A veces te miro y pienso: 'Qué bueno que existes'",
+    "A veces te miro y pienso: 'Que hermosa te vez...'",
     "Hay personas que son hogar, y tú te sientes así",
-    "Roma no se construyó en un diá",
+    "Roma no fue construida en un diá.",
     "No eres una opción, eres el destino",
     "546", "✨"
 ];
@@ -62,7 +63,6 @@ function startExperience() {
                 document.getElementById('loader-container').classList.add('hidden');
                 document.getElementById('universe-container').classList.remove('hidden');
                 
-                // Mostrar footer con fade
                 const footer = document.getElementById('zoom-hint');
                 footer.classList.remove('hidden');
                 gsap.fromTo(footer, { opacity: 0 }, { opacity: 1, duration: 2 });
@@ -84,7 +84,9 @@ function buildSpiral() {
         
         const angle = i * 0.95; 
         const radius = 120 + (i * 30);
-        const z = i * -320; 
+        
+        // POSICIÓN INICIAL DE FRASES: Espaciado mucho mayor para efecto túnel infinito
+        const z = i * -800; 
 
         gsap.set(card, {
             left: "50%", top: "50%",
@@ -98,9 +100,9 @@ function buildSpiral() {
 
     gsap.to(galaxy, { rotationZ: 360, duration: 100, repeat: -1, ease: "none" });
 
-    // VIAJE AUTOMÁTICO (Velocidad aumentada +20%)
-    let moveZ = 0;
-    const speed = 0.75; 
+    // VIAJE DESDE MUY LEJOS: Iniciamos en -2000 y subimos velocidad
+    let moveZ = -2000; 
+    const speed = 0.85; 
 
     function travel() {
         moveZ += speed;
@@ -109,7 +111,6 @@ function buildSpiral() {
     }
     travel();
 
-    // Zoom manual táctil mejorado
     let lastY = 0;
     window.addEventListener('touchstart', e => lastY = e.touches[0].clientY);
     window.addEventListener('touchmove', e => {
