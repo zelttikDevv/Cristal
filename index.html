@@ -3,31 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nuestro Universo ✨</title>
+    <title>Cristal ✨</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@200;400&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <div id="global-stars"></div>
+
     <section id="lock-screen">
         <div class="lock-container">
-            <p>Solo son 3 números, 3 números que conoces muy bien...</p>
+            <p id="dynamic-hint">Son 3 números</p>
             <div class="inputs">
                 <input type="number" class="code-input" maxlength="1" inputmode="numeric">
                 <input type="number" class="code-input" maxlength="1" inputmode="numeric">
                 <input type="number" class="code-input" maxlength="1" inputmode="numeric">
             </div>
-            <button id="unlock-btn">DESBLOQUEAR</button>
+            <button id="unlock-btn">UNLOCK</button>
         </div>
     </section>
 
     <div id="loader-container" class="hidden">
         <div class="loader-bar"><div id="progress"></div></div>
-        <p class="loading-text">Creando tu universo...</p>
+        <p class="loading-text">Sincronizando...</p>
     </div>
 
     <div id="universe-container" class="hidden">
-        <div id="stars"></div>
         <div id="spiral-galaxy"></div>
     </div>
 
