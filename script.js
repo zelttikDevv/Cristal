@@ -1,5 +1,4 @@
 const CORRECT_CODE = "546";
-
 const phrases = [
     "Hay frecuencias que solo se sintonizan una vez",
     "No es el tiempo, es la conexión",
@@ -11,23 +10,22 @@ const phrases = [
     "Hay personas que son hogar, y tú te sientes así",
     "Bailaría Innerbloom contigo en cualquier galaxia",
     "No eres una opción, eres el destino",
-    "✨", "💜"
+    "546 💜", "✨"
 ];
 
-// Lógica de inputs (salto automático)
+const unlockBtn = document.getElementById('unlock-btn');
 const inputs = document.querySelectorAll('.code-input');
-inputs.forEach((input, index) => {
+
+// Auto-tab entre inputs
+inputs.forEach((input, i) => {
     input.addEventListener('input', () => {
-        if (input.value.length === 1 && index < inputs.length - 1) {
-            inputs[index + 1].focus();
-        }
+        if (input.value.length === 1 && i < inputs.length - 1) inputs[i+1].focus();
     });
 });
 
-document.getElementById('unlock-btn').addEventListener('click', () => {
-    const val = Array.from(inputs).map(i => i.value).join('');
-    
-    if (val === CORRECT_CODE) {
+unlockBtn.addEventListener('click', () => {
+    const code = Array.from(inputs).map(i => i.value).join('');
+    if (code === CORRECT_CODE) {
         startLoading();
     } else {
         gsap.to(".inputs", { x: 10, repeat: 5, yoyo: true, duration: 0.05 });
@@ -35,64 +33,66 @@ document.getElementById('unlock-btn').addEventListener('click', () => {
 });
 
 function startLoading() {
-    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('lock-screen').classList.add('hidden');
     document.getElementById('loader-container').classList.remove('hidden');
     
     gsap.to("#progress", {
-        width: "100%",
-        duration: 3.5,
-        ease: "power2.inOut",
+        width: "100%", duration: 3, ease: "power2.inOut",
         onComplete: () => {
             document.getElementById('loader-container').classList.add('hidden');
+            document.getElementById('galaxy-wrapper').classList.remove('hidden');
             document.getElementById('zoom-hint').classList.remove('hidden');
-            const audio = document.getElementById('innerbloom-audio');
-            audio.play().catch(() => console.log("Audio waiting for interaction"));
-            initGalaxy();
+            document.getElementById('innerbloom-audio').play();
+            createGalaxy();
         }
     });
 }
 
-function initGalaxy() {
-    const canvas = document.getElementById('galaxy-canvas');
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+function createGalaxy() {
+    const container = document.getElementById('text-universe');
+    const totalPhrases = 40; // Repetimos frases para llenar el espacio
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    for (let i = 0; i < totalPhrases; i++) {
+        const span = document.createElement('span');
+        span.className = 'galaxy-phrase';
+        span.innerText = phrases[i % phrases.length];
+        
+        // Matemáticas para la espiral (como el video)
+        const angle = i * 0.8; 
+        const radius = i * 15; // Se expande hacia afuera
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+        const z = (Math.random() - 0.5) * 500;
 
-    const galaxyGroup = new THREE.Group();
-    scene.add(galaxyGroup);
+        container.appendChild(span);
 
-    // Partículas de fondo
-    const starGeo = new THREE.BufferGeometry();
-    const starPos = new Float32Array(3000 * 3);
-    for(let i=0; i<3000*3; i++) starPos[i] = (Math.random() - 0.5) * 120;
-    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-    const starMat = new THREE.PointsMaterial({ size: 0.12, color: 0xff1493, transparent: true, opacity: 0.6 });
-    galaxyGroup.add(new THREE.Points(starGeo, starMat));
-
-    // Crear las frases como objetos flotantes (puntos de luz)
-    // Nota: Para texto 3D real se requiere fuente externa, aquí usamos el movimiento
-    // Pero la "vibe" se da con el movimiento de la cámara
-    camera.position.z = 40;
-
-    function animate() {
-        requestAnimationFrame(animate);
-        galaxyGroup.rotation.y += 0.0008;
-        galaxyGroup.rotation.z += 0.0003;
-        renderer.render(scene, camera);
+        // Animación individual de rotación
+        gsap.set(span, { x: window.innerWidth/2 + x, y: window.innerHeight/2 + y, z: z });
+        
+        gsap.to(span, {
+            rotationZ: 360,
+            duration: 20 + Math.random() * 20,
+            repeat: -1,
+            ease: "none"
+        });
     }
-    animate();
 
-    // Control táctil para móvil
-    let lastY = 0;
-    window.addEventListener('touchstart', e => lastY = e.touches[0].clientY, {passive: true});
+    // Rotación general del universo
+    gsap.to(container, {
+        rotationY: 360,
+        duration: 40,
+        repeat: -1,
+        ease: "none"
+    });
+
+    // Control de Zoom con el dedo / mouse
+    let zoom = 0;
     window.addEventListener('touchmove', e => {
-        let delta = (lastY - e.touches[0].clientY) * 0.08;
-        let targetZ = camera.position.z + delta;
-        targetZ = Math.max(5, Math.min(targetZ, 80));
-        gsap.to(camera.position, { z: targetZ, duration: 0.6 });
-        lastY = e.touches[0].clientY;
-    }, {passive: true});
+        zoom -= 2; // Efecto de entrar a la galaxia
+        gsap.to(container, { z: zoom, duration: 1 });
+    });
+    window.addEventListener('wheel', e => {
+        zoom -= e.deltaY * 0.5;
+        gsap.to(container, { z: zoom, duration: 1 });
+    });
 }
