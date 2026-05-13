@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Innerbloom ✨</title>
+    <title>Para Mi Favorita ✨</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <section id="lock-screen">
         <div class="lock-container">
-            <p>La única pista que tienes para desbloquear esto son 3 números</p>
+            <p>Solo son 3 números, 3 números que conoces muy bien...</p>
             <div class="inputs">
-                <input type="number" id="d1" class="code-input" maxlength="1">
-                <input type="number" id="d2" class="code-input" maxlength="1">
-                <input type="number" id="d3" class="code-input" maxlength="1">
+                <input type="number" id="d1" class="code-input" maxlength="1" pattern="\[0-9]*" inputmode="numeric">
+                <input type="number" id="d2" class="code-input" maxlength="1" pattern="\[0-9]*" inputmode="numeric">
+                <input type="number" id="d3" class="code-input" maxlength="1" pattern="\[0-9]*" inputmode="numeric">
             </div>
-            <button id="unlock-btn">ENTRAR</button>
+            <button id="unlock-btn">DESBLOQUEAR</button>
         </div>
     </section>
+
+    <div id="loader-container" class="hidden">
+        <div class="loader-bar">
+            <div id="progress"></div>
+        </div>
+        <p class="loading-text">Iniciando sistema...</p>
+    </div>
 
     <canvas id="galaxy-canvas"></canvas>
     <div id="zoom-hint" class="hidden">Eventualmente todo lo que es para ti termina encontrándote...</div>
