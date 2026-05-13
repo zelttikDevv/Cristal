@@ -4,7 +4,7 @@ body, html {
     font-family: 'Lexend', sans-serif; overflow: hidden;
 }
 
-/* Fondo Estrellado Animado */
+/* Fondo Estrellado Animado Global */
 #global-stars {
     position: fixed; inset: 0;
     background-image: 
@@ -23,7 +23,7 @@ body, html {
     50% { opacity: 0.6; transform: scale(1.05); }
 }
 
-/* Pantalla de Bloqueo Centrada de 10 */
+/* Pantalla de Bloqueo Centrada */
 #lock-screen {
     position: fixed; inset: 0;
     display: flex; justify-content: center; align-items: center;
@@ -38,7 +38,7 @@ body, html {
 }
 
 #dynamic-hint {
-    height: 20px; /* Evita que el contenido salte al cambiar el texto */
+    height: 24px;
     font-size: 0.85rem;
     letter-spacing: 1.5px;
     color: rgba(255,255,255,0.7);
@@ -67,18 +67,57 @@ body, html {
     letter-spacing: 3px; transition: 0.4s;
 }
 
-/* Loader & Universe */
-#loader-container { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; background: #000; }
+/* Loader */
+#loader-container { 
+    position: fixed; inset: 0; display: flex; flex-direction: column; 
+    justify-content: center; align-items: center; z-index: 20; background: #000; 
+}
 .loader-bar { width: 180px; height: 1px; background: rgba(255,255,255,0.1); margin-bottom: 10px; }
 #progress { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; }
 
+/* Universo Espacial */
 #universe-container { position: fixed; inset: 0; perspective: 1200px; z-index: 5; }
 #spiral-galaxy { position: absolute; inset: 0; transform-style: preserve-3d; }
 
 .phrase-card {
-    position: absolute; width: 150px; text-align: center; color: #fff;
-    font-size: 0.85rem; line-height: 1.4; padding: 12px;
+    position: absolute; 
+    width: 150px; 
+    text-align: center; 
+    color: #fff;
+    font-size: 0.85rem; 
+    line-height: 1.4; 
+    padding: 12px;
     text-shadow: 0 0 5px rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+
+/* Footer Discreto y Elegante */
+#zoom-hint {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    font-weight: 200;
+    text-transform: lowercase;
+    z-index: 100;
+    pointer-events: none;
+    transition: opacity 1s ease;
+}
+
+#zoom-hint:after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 8px auto 0;
 }
 
 .hidden { display: none !important; }
