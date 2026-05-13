@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cristal ✨</title>
+    <title>Para Mi Favorita ✨</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@200;400&display=swap" rel="stylesheet">
 </head>
 <body>
 
+    <!-- Fondo de estrellas animado para todo el sitio -->
     <div id="global-stars"></div>
 
+    <!-- Pantalla de Bloqueo Centrada -->
     <section id="lock-screen">
         <div class="lock-container">
+            <!-- Pistas dinámicas -->
             <p id="dynamic-hint">Son 3 números</p>
             <div class="inputs">
                 <input type="number" class="code-input" maxlength="1" inputmode="numeric">
@@ -23,16 +26,21 @@
         </div>
     </section>
 
+    <!-- Barra de Carga -->
     <div id="loader-container" class="hidden">
         <div class="loader-bar"><div id="progress"></div></div>
         <p class="loading-text">Sincronizando...</p>
     </div>
 
+    <!-- Galaxia Principal -->
     <div id="universe-container" class="hidden">
         <div id="spiral-galaxy"></div>
     </div>
 
-    <div id="zoom-hint" class="hidden">Eventualmente todo lo que es para ti termina encontrándote...</div>
+    <!-- Footer Discreto -->
+    <div id="zoom-hint" class="hidden">
+        Eventualmente todo lo que es para ti termina encontrándote...
+    </div>
 
     <audio id="innerbloom-audio" loop>
         <source src="innerbloom.mp3" type="audio/mpeg">
