@@ -86,7 +86,7 @@ function buildSpiral() {
         const radius = 120 + (i * 30);
         
         // POSICIÓN INICIAL DE FRASES: Espaciado mucho mayor para efecto túnel infinito
-        const z = i * -800; 
+        const z = i * -1200; 
 
         gsap.set(card, {
             left: "50%", top: "50%",
@@ -101,8 +101,8 @@ function buildSpiral() {
     gsap.to(galaxy, { rotationZ: 360, duration: 100, repeat: -1, ease: "none" });
 
     // VIAJE DESDE MUY LEJOS: Iniciamos en -2000 y subimos velocidad
-    let moveZ = -2000; 
-    const speed = 0.85; 
+    let moveZ = -6000; 
+    const speed = 1.1; 
 
     function travel() {
         moveZ += speed;
