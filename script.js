@@ -16,7 +16,6 @@ const phrases = [
 const inputs = document.querySelectorAll('.code-input');
 const unlockBtn = document.getElementById('unlock-btn');
 
-// Manejo de inputs
 inputs.forEach((input, i) => {
     input.addEventListener('input', () => {
         if (input.value.length === 1 && i < inputs.length - 1) inputs[i+1].focus();
@@ -40,70 +39,62 @@ function startExperience() {
         width: "100%", duration: 3, ease: "power2.inOut",
         onComplete: () => {
             document.getElementById('loader-container').classList.add('hidden');
-            document.getElementById('universe').classList.remove('hidden');
+            document.getElementById('universe-container').classList.remove('hidden');
             document.getElementById('zoom-hint').classList.remove('hidden');
             document.getElementById('innerbloom-audio').play();
-            buildUniverse();
+            buildSpiral();
         }
     });
 }
 
-function buildUniverse() {
-    const starsContainer = document.getElementById('stars-container');
-    const phrasesContainer = document.getElementById('phrases-container');
-
-    // Crear 150 estrellas
-    for (let i = 0; i < 150; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        const size = Math.random() * 3;
-        const x = Math.random() * 100;
-        const y = Math.random() * 100;
-        const z = Math.random() * 1000 - 500;
-
-        gsap.set(star, {
-            width: size, height: size,
-            left: x + "%", top: y + "%",
-            z: z
-        });
-        starsContainer.appendChild(star);
-    }
-
-    // Crear frases en espiral/profundidad
+function buildSpiral() {
+    const galaxy = document.getElementById('spiral-galaxy');
+    
+    // Crear la espiral
     phrases.forEach((text, i) => {
-        const div = document.createElement('div');
-        div.className = 'phrase';
-        div.innerText = text;
+        const card = document.createElement('div');
+        card.className = 'phrase-card';
+        card.innerText = text;
         
-        const angle = i * 0.7;
-        const radius = 150 + (i * 20);
-        const z = i * -150; // Cada frase más lejos que la anterior
+        // Matemáticas para la espiral del video
+        const angle = i * 0.9; 
+        const radius = 100 + (i * 25);
+        const z = i * -250; // Profundidad
 
-        gsap.set(div, {
+        gsap.set(card, {
             left: "50%", top: "50%",
             x: Math.cos(angle) * radius,
             y: Math.sin(angle) * radius,
             z: z,
             xPercent: -50, yPercent: -50
         });
-        phrasesContainer.appendChild(div);
+        
+        galaxy.appendChild(card);
     });
 
-    // Animación de rotación constante
-    gsap.to([starsContainer, phrasesContainer], {
+    // Animación de rotación general
+    gsap.to(galaxy, {
         rotationZ: 360,
-        duration: 100,
+        duration: 60,
         repeat: -1,
         ease: "none"
     });
 
-    // Movimiento con el dedo (Zoom/Viaje)
-    let currentZ = 0;
-    window.addEventListener('touchmove', (e) => {
-        currentZ += 5; // Simula avanzar
-        gsap.to([starsContainer, phrasesContainer], {
-            z: currentZ,
-            duration: 0.5
-        });
+    // Movimiento infinito de "viaje" (Zoom)
+    let moveZ = 0;
+    function travel() {
+        moveZ += 0.5; // Velocidad de crucero
+        gsap.set(galaxy, { z: moveZ });
+        requestAnimationFrame(travel);
+    }
+    travel();
+
+    // Permitir zoom manual en celular
+    let lastY = 0;
+    window.addEventListener('touchstart', e => lastY = e.touches[0].clientY);
+    window.addEventListener('touchmove', e => {
+        let delta = (lastY - e.touches[0].clientY) * 2;
+        moveZ += delta;
+        lastY = e.touches[0].clientY;
     });
 }
