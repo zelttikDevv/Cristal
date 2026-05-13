@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Innerbloom ✨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <section id="lock-screen">
+        <div class="lock-container">
+            <p>La única pista que tienes para desbloquear esto son 3 números</p>
+            <div class="inputs">
+                <input type="number" id="d1" class="code-input" maxlength="1">
+                <input type="number" id="d2" class="code-input" maxlength="1">
+                <input type="number" id="d3" class="code-input" maxlength="1">
+            </div>
+            <button id="unlock-btn">ENTRAR</button>
+        </div>
+    </section>
+
+    <canvas id="galaxy-canvas"></canvas>
+    <div id="zoom-hint" class="hidden">Eventualmente todo lo que es para ti termina encontrándote...</div>
+
+    <audio id="innerbloom-audio" loop>
+        <source src="innerbloom.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
