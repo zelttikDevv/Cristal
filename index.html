@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Para Mi Favorita ✨</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@200;400&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -13,9 +13,9 @@
         <div class="lock-container">
             <p>Solo son 3 números, 3 números que conoces muy bien...</p>
             <div class="inputs">
-                <input type="number" id="d1" class="code-input" maxlength="1" inputmode="numeric">
-                <input type="number" id="d2" class="code-input" maxlength="1" inputmode="numeric">
-                <input type="number" id="d3" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="number" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="number" class="code-input" maxlength="1" inputmode="numeric">
+                <input type="number" class="code-input" maxlength="1" inputmode="numeric">
             </div>
             <button id="unlock-btn">DESBLOQUEAR</button>
         </div>
@@ -23,12 +23,12 @@
 
     <div id="loader-container" class="hidden">
         <div class="loader-bar"><div id="progress"></div></div>
-        <p class="loading-text">Creando nuestro universo...</p>
+        <p class="loading-text">Creando tu universo...</p>
     </div>
 
-    <div id="galaxy-wrapper" class="hidden">
-        <canvas id="galaxy-canvas"></canvas>
-        <div id="text-universe"></div>
+    <div id="universe" class="hidden">
+        <div id="stars-container"></div>
+        <div id="phrases-container"></div>
     </div>
 
     <div id="zoom-hint" class="hidden">Eventualmente todo lo que es para ti termina encontrándote...</div>
@@ -37,7 +37,6 @@
         <source src="innerbloom.mp3" type="audio/mpeg">
     </audio>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="script.js"></script>
 </body>
