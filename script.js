@@ -9,13 +9,13 @@ const hints = [
 const phrases = [
     "Hay frecuencias que solo se sintonizan una vez",
     "No es el tiempo, es la conexión",
-    "Me gusta el caos, pero solo el caos que tu puedes controlar",
+    "Me gusta el caos, pero solo si es contigo",
     "Eres ese 'algo' que no sabía que estaba buscando",
     "Si el universo es infinito, qué suerte coincidir aquí",
     "Contigo el silencio no es incómodo, es paz",
     "A veces te miro y pienso: 'Qué bueno que existes'",
     "Hay personas que son hogar, y tú te sientes así",
-    "Recuerda, Roma no se construyó en un día",
+    "Roma no se construyó en un diá",
     "No eres una opción, eres el destino",
     "546", "✨"
 ];
@@ -25,14 +25,16 @@ let hintIndex = 0;
 const hintElement = document.getElementById('dynamic-hint');
 
 setInterval(() => {
-    gsap.to(hintElement, { opacity: 0, duration: 0.5, onComplete: () => {
-        hintIndex = (hintIndex + 1) % hints.length;
-        hintElement.innerText = hints[hintIndex];
-        gsap.to(hintElement, { opacity: 1, duration: 0.5 });
-    }});
+    if (hintElement) {
+        gsap.to(hintElement, { opacity: 0, duration: 0.5, onComplete: () => {
+            hintIndex = (hintIndex + 1) % hints.length;
+            hintElement.innerText = hints[hintIndex];
+            gsap.to(hintElement, { opacity: 1, duration: 0.5 });
+        }});
+    }
 }, 3500);
 
-// --- Lógica de Password ---
+// --- Manejo de Inputs de Password ---
 const inputs = document.querySelectorAll('.code-input');
 inputs.forEach((input, i) => {
     input.addEventListener('input', () => {
@@ -59,7 +61,12 @@ function startExperience() {
             onComplete: () => {
                 document.getElementById('loader-container').classList.add('hidden');
                 document.getElementById('universe-container').classList.remove('hidden');
-                document.getElementById('zoom-hint').classList.remove('hidden');
+                
+                // Mostrar footer con fade
+                const footer = document.getElementById('zoom-hint');
+                footer.classList.remove('hidden');
+                gsap.fromTo(footer, { opacity: 0 }, { opacity: 1, duration: 2 });
+                
                 document.getElementById('innerbloom-audio').play();
                 buildSpiral();
             }
@@ -91,9 +98,9 @@ function buildSpiral() {
 
     gsap.to(galaxy, { rotationZ: 360, duration: 100, repeat: -1, ease: "none" });
 
-    // VELOCIDAD AUMENTADA
+    // VIAJE AUTOMÁTICO (Velocidad aumentada +20%)
     let moveZ = 0;
-    const speed = 0.75; // Un toque más de velocidad para el efecto 20%
+    const speed = 0.75; 
 
     function travel() {
         moveZ += speed;
@@ -102,6 +109,7 @@ function buildSpiral() {
     }
     travel();
 
+    // Zoom manual táctil mejorado
     let lastY = 0;
     window.addEventListener('touchstart', e => lastY = e.touches[0].clientY);
     window.addEventListener('touchmove', e => {
