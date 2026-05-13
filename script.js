@@ -1,28 +1,46 @@
 const CORRECT_CODE = "546";
+const hints = [
+    "Son 3 números",
+    "Yo sé que conoces esos 3 números",
+    "Última pista...",
+    "Innerbloom"
+];
+
 const phrases = [
     "Hay frecuencias que solo se sintonizan una vez",
     "No es el tiempo, es la conexión",
-    "Me gusta el caos, pero solo si es contigo",
+    "Me gusta el caos, pero solo el caos que tu puedes controlar",
     "Eres ese 'algo' que no sabía que estaba buscando",
     "Si el universo es infinito, qué suerte coincidir aquí",
     "Contigo el silencio no es incómodo, es paz",
     "A veces te miro y pienso: 'Qué bueno que existes'",
     "Hay personas que son hogar, y tú te sientes así",
-    "Bailaría Innerbloom contigo en cualquier galaxia",
+    "Recuerda, Roma no se construyó en un día",
     "No eres una opción, eres el destino",
     "546", "✨"
 ];
 
-const inputs = document.querySelectorAll('.code-input');
-const unlockBtn = document.getElementById('unlock-btn');
+// --- Lógica de Pistas Dinámicas ---
+let hintIndex = 0;
+const hintElement = document.getElementById('dynamic-hint');
 
+setInterval(() => {
+    gsap.to(hintElement, { opacity: 0, duration: 0.5, onComplete: () => {
+        hintIndex = (hintIndex + 1) % hints.length;
+        hintElement.innerText = hints[hintIndex];
+        gsap.to(hintElement, { opacity: 1, duration: 0.5 });
+    }});
+}, 3500);
+
+// --- Lógica de Password ---
+const inputs = document.querySelectorAll('.code-input');
 inputs.forEach((input, i) => {
     input.addEventListener('input', () => {
         if (input.value.length === 1 && i < inputs.length - 1) inputs[i+1].focus();
     });
 });
 
-unlockBtn.addEventListener('click', () => {
+document.getElementById('unlock-btn').addEventListener('click', () => {
     const code = Array.from(inputs).map(i => i.value).join('');
     if (code === CORRECT_CODE) {
         startExperience();
@@ -32,19 +50,21 @@ unlockBtn.addEventListener('click', () => {
 });
 
 function startExperience() {
-    document.getElementById('lock-screen').classList.add('hidden');
-    document.getElementById('loader-container').classList.remove('hidden');
-    
-    gsap.to("#progress", {
-        width: "100%", duration: 2.5, ease: "power2.inOut",
-        onComplete: () => {
-            document.getElementById('loader-container').classList.add('hidden');
-            document.getElementById('universe-container').classList.remove('hidden');
-            document.getElementById('zoom-hint').classList.remove('hidden');
-            document.getElementById('innerbloom-audio').play();
-            buildSpiral();
-        }
-    });
+    gsap.to("#lock-screen", { opacity: 0, duration: 1, onComplete: () => {
+        document.getElementById('lock-screen').style.display = 'none';
+        document.getElementById('loader-container').classList.remove('hidden');
+        
+        gsap.to("#progress", {
+            width: "100%", duration: 2.5, ease: "power2.inOut",
+            onComplete: () => {
+                document.getElementById('loader-container').classList.add('hidden');
+                document.getElementById('universe-container').classList.remove('hidden');
+                document.getElementById('zoom-hint').classList.remove('hidden');
+                document.getElementById('innerbloom-audio').play();
+                buildSpiral();
+            }
+        });
+    }});
 }
 
 function buildSpiral() {
@@ -57,7 +77,7 @@ function buildSpiral() {
         
         const angle = i * 0.95; 
         const radius = 120 + (i * 30);
-        const z = i * -300; 
+        const z = i * -320; 
 
         gsap.set(card, {
             left: "50%", top: "50%",
@@ -66,20 +86,14 @@ function buildSpiral() {
             z: z,
             xPercent: -50, yPercent: -50
         });
-        
         galaxy.appendChild(card);
     });
 
-    gsap.to(galaxy, {
-        rotationZ: 360,
-        duration: 80,
-        repeat: -1,
-        ease: "none"
-    });
+    gsap.to(galaxy, { rotationZ: 360, duration: 100, repeat: -1, ease: "none" });
 
-    // VIAJE AUTOMÁTICO - Aumentado un 20%
+    // VELOCIDAD AUMENTADA
     let moveZ = 0;
-    const speed = 0.65; // Antes era 0.5, ahora ~20% más rápido
+    const speed = 0.75; // Un toque más de velocidad para el efecto 20%
 
     function travel() {
         moveZ += speed;
@@ -88,11 +102,10 @@ function buildSpiral() {
     }
     travel();
 
-    // Zoom manual (dedo/mouse)
     let lastY = 0;
     window.addEventListener('touchstart', e => lastY = e.touches[0].clientY);
     window.addEventListener('touchmove', e => {
-        let delta = (lastY - e.touches[0].clientY) * 2.5; // También aumentamos sensibilidad
+        let delta = (lastY - e.touches[0].clientY) * 2.8;
         moveZ += delta;
         lastY = e.touches[0].clientY;
     });
