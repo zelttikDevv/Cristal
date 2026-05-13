@@ -1,90 +1,98 @@
 const CORRECT_CODE = "546";
-const unlockBtn = document.getElementById('unlock-btn');
-const audio = document.getElementById('innerbloom-audio');
 
-unlockBtn.addEventListener('click', () => {
-    const val = document.getElementById('d1').value + document.getElementById('d2').value + document.getElementById('d3').value;
+const phrases = [
+    "Hay frecuencias que solo se sintonizan una vez",
+    "No es el tiempo, es la conexión",
+    "Me gusta el caos, pero solo si es contigo",
+    "Eres ese 'algo' que no sabía que estaba buscando",
+    "Si el universo es infinito, qué suerte coincidir aquí",
+    "Contigo el silencio no es incómodo, es paz",
+    "A veces te miro y pienso: 'Qué bueno que existes'",
+    "Hay personas que son hogar, y tú te sientes así",
+    "Bailaría Innerbloom contigo en cualquier galaxia",
+    "No eres una opción, eres el destino",
+    "✨", "💜"
+];
+
+// Lógica de inputs (salto automático)
+const inputs = document.querySelectorAll('.code-input');
+inputs.forEach((input, index) => {
+    input.addEventListener('input', () => {
+        if (input.value.length === 1 && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+        }
+    });
+});
+
+document.getElementById('unlock-btn').addEventListener('click', () => {
+    const val = Array.from(inputs).map(i => i.value).join('');
+    
     if (val === CORRECT_CODE) {
-        audio.play();
-        document.getElementById('lock-screen').style.display = 'none'; // Forzamos desaparición
-        document.getElementById('zoom-hint').classList.remove('hidden');
-        initGalaxy();
+        startLoading();
+    } else {
+        gsap.to(".inputs", { x: 10, repeat: 5, yoyo: true, duration: 0.05 });
     }
 });
+
+function startLoading() {
+    document.getElementById('lock-screen').style.display = 'none';
+    document.getElementById('loader-container').classList.remove('hidden');
+    
+    gsap.to("#progress", {
+        width: "100%",
+        duration: 3.5,
+        ease: "power2.inOut",
+        onComplete: () => {
+            document.getElementById('loader-container').classList.add('hidden');
+            document.getElementById('zoom-hint').classList.remove('hidden');
+            const audio = document.getElementById('innerbloom-audio');
+            audio.play().catch(() => console.log("Audio waiting for interaction"));
+            initGalaxy();
+        }
+    });
+}
 
 function initGalaxy() {
     const canvas = document.getElementById('galaxy-canvas');
     const scene = new THREE.Scene();
-    
-    // Cámara: bajamos el campo de visión (FOV) para que las estrellas se vean más grandes
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ 
-        canvas: canvas, 
-        antialias: true,
-        alpha: false 
-    });
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setClearColor(0x000000, 1);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Creamos las estrellas con un tamaño mucho mayor para móviles
-    const starsGeo = new THREE.BufferGeometry();
-    const starCount = 4000;
-    const pos = new Float32Array(starCount * 3);
-    
-    for(let i = 0; i < starCount * 3; i++) {
-        // Esparcimos las estrellas en un área más cerrada para que siempre haya algo en pantalla
-        pos[i] = (Math.random() - 0.5) * 100; 
-    }
-    starsGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const galaxyGroup = new THREE.Group();
+    scene.add(galaxyGroup);
 
-    const starsMat = new THREE.PointsMaterial({ 
-        size: 0.15, // Aumentamos tamaño para que se vean en pantallas 4K de móvil
-        color: 0xff00ff,
-        transparent: true,
-        opacity: 0.9,
-        blending: THREE.AdditiveBlending 
-    });
+    // Partículas de fondo
+    const starGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(3000 * 3);
+    for(let i=0; i<3000*3; i++) starPos[i] = (Math.random() - 0.5) * 120;
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({ size: 0.12, color: 0xff1493, transparent: true, opacity: 0.6 });
+    galaxyGroup.add(new THREE.Points(starGeo, starMat));
 
-    const stars = new THREE.Points(starsGeo, starsMat);
-    scene.add(stars);
-
-    // Posición inicial de la cámara
-    camera.position.z = 30;
+    // Crear las frases como objetos flotantes (puntos de luz)
+    // Nota: Para texto 3D real se requiere fuente externa, aquí usamos el movimiento
+    // Pero la "vibe" se da con el movimiento de la cámara
+    camera.position.z = 40;
 
     function animate() {
         requestAnimationFrame(animate);
-        stars.rotation.y += 0.0005; // Rotación muy lenta y elegante
-        stars.rotation.x += 0.0002;
+        galaxyGroup.rotation.y += 0.0008;
+        galaxyGroup.rotation.z += 0.0003;
         renderer.render(scene, camera);
     }
     animate();
 
-    // --- CORRECCIÓN DE ZOOM PARA MÓVIL ---
-    let lastTouchY = 0;
-    window.addEventListener('touchstart', e => {
-        lastTouchY = e.touches[0].clientY;
-    }, { passive: false });
-
+    // Control táctil para móvil
+    let lastY = 0;
+    window.addEventListener('touchstart', e => lastY = e.touches[0].clientY, {passive: true});
     window.addEventListener('touchmove', e => {
-        let currentTouchY = e.touches[0].clientY;
-        let diff = lastTouchY - currentTouchY;
-        
-        // El movimiento afecta la posición Z de la cámara
-        camera.position.z += diff * 0.05;
-        
-        // Límites para no perderse en el espacio
-        if (camera.position.z < 5) camera.position.z = 5;
-        if (camera.position.z > 80) camera.position.z = 80;
-        
-        lastTouchY = currentTouchY;
-    }, { passive: false });
-
-    // Ajuste por si gira el celular
-    window.addEventListener('resize', () => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-    });
+        let delta = (lastY - e.touches[0].clientY) * 0.08;
+        let targetZ = camera.position.z + delta;
+        targetZ = Math.max(5, Math.min(targetZ, 80));
+        gsap.to(camera.position, { z: targetZ, duration: 0.6 });
+        lastY = e.touches[0].clientY;
+    }, {passive: true});
 }
