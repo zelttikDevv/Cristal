@@ -4,69 +4,81 @@ body, html {
     font-family: 'Lexend', sans-serif; overflow: hidden;
 }
 
-.hidden { display: none !important; }
-
-/* Lock & Loader en Monocromático */
-#lock-screen, #loader-container {
-    position: fixed; inset: 0; display: flex; flex-direction: column;
-    justify-content: center; align-items: center; z-index: 1000;
-    background: radial-gradient(circle, #111 0%, #000 100%);
+/* Fondo Estrellado Animado */
+#global-stars {
+    position: fixed; inset: 0;
+    background-image: 
+        radial-gradient(1px 1px at 25% 35%, #fff, transparent),
+        radial-gradient(1.5px 1.5px at 60% 75%, #fff, transparent),
+        radial-gradient(1px 1px at 10% 85%, #fff, transparent),
+        radial-gradient(2px 2px at 85% 15%, #fff, transparent);
+    background-size: 250px 250px;
+    opacity: 0.4;
+    animation: twinkle 5s infinite linear;
+    z-index: 0;
 }
 
-.inputs { display: flex; gap: 10px; margin-bottom: 20px; }
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+/* Pantalla de Bloqueo Centrada de 10 */
+#lock-screen {
+    position: fixed; inset: 0;
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10;
+    background: radial-gradient(circle, rgba(20,20,20,0.8) 0%, #000 100%);
+}
+
+.lock-container {
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+}
+
+#dynamic-hint {
+    height: 20px; /* Evita que el contenido salte al cambiar el texto */
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 40px;
+    transition: opacity 0.5s;
+}
+
+.inputs { display: flex; gap: 15px; justify-content: center; margin-bottom: 40px; }
+
 .code-input {
-    width: 50px; height: 70px; background: rgba(255,255,255,0.05);
-    border: 1px solid #ffffff; border-radius: 10px; color: white;
-    font-size: 2rem; text-align: center; outline: none;
-}
-
-#unlock-btn {
-    background: transparent; border: 1px solid #ffffff; color: white;
-    padding: 12px 35px; border-radius: 25px; cursor: pointer;
-    text-transform: uppercase; letter-spacing: 2px;
+    width: 60px; height: 80px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    color: white; font-size: 2.5rem;
+    text-align: center; outline: none;
     transition: 0.3s;
 }
-#unlock-btn:hover { background: white; color: black; }
 
-.loader-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-bottom: 10px; }
-#progress { width: 0%; height: 100%; background: #ffffff; box-shadow: 0 0 15px #ffffff; }
+.code-input:focus { border-bottom-color: #aaa; transform: translateY(-5px); }
 
-/* Universo Realista */
-#universe-container {
-    position: fixed; inset: 0;
-    perspective: 1200px;
+#unlock-btn {
+    background: white; border: none; color: black;
+    padding: 15px 40px; border-radius: 2px;
+    font-size: 0.7rem; font-weight: bold; cursor: pointer;
+    letter-spacing: 3px; transition: 0.4s;
 }
 
-#stars {
-    position: absolute; width: 200%; height: 200%;
-    background-image: radial-gradient(1.5px 1.5px at 20px 30px, #fff, rgba(0,0,0,0)),
-                      radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-                      radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0));
-    background-repeat: repeat; background-size: 300px 300px;
-    opacity: 0.5;
-}
+/* Loader & Universe */
+#loader-container { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20; background: #000; }
+.loader-bar { width: 180px; height: 1px; background: rgba(255,255,255,0.1); margin-bottom: 10px; }
+#progress { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; }
 
-#spiral-galaxy {
-    position: absolute; inset: 0;
-    transform-style: preserve-3d;
-}
+#universe-container { position: fixed; inset: 0; perspective: 1200px; z-index: 5; }
+#spiral-galaxy { position: absolute; inset: 0; transform-style: preserve-3d; }
 
-/* Frases en Blanco Elegante */
 .phrase-card {
-    position: absolute;
-    width: 150px;
-    text-align: center;
-    color: #ffffff;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    position: absolute; width: 150px; text-align: center; color: #fff;
+    font-size: 0.85rem; line-height: 1.4; padding: 12px;
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
 }
 
-#zoom-hint {
-    position: fixed; bottom: 30px; width: 100%; text-align: center;
-    color: rgba(255, 255, 255, 0.5); font-size: 0.8rem; z-index: 100;
-}
+.hidden { display: none !important; }
